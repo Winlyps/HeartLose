@@ -1,5 +1,6 @@
 package winlyps.heartlose;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -7,44 +8,43 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot; // Remove if not used elsewhere
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class HeartLose extends JavaPlugin implements CommandExecutor, Listener {
 
-    private static final int DEFAULT_MAX_HEARTS = 20;
-    private static final String REDSTONE_DISPLAY_NAME = "Zycie";
+    private static final int MIN_MAX_HEARTS = 1;
+    private static final int MAX_MAX_HEARTS = 20; // Ensure comment matches this value
+    private static final String COMMAND_NAME = "zycie";
+    private static final String REDSTONE_DISPLAY_NAME = ChatColor.RED + "Zycie";
     private static final String NOT_A_PLAYER_MSG = "This command can only be used by players.";
     private static final String REDSTONE_ADDED_MSG = "Redstone 'Zycie' added to your inventory.";
 
     @Override
     public void onEnable() {
-        getCommand("zycie").setExecutor(this);
+        getCommand(COMMAND_NAME).setExecutor(this);
         getServer().getPluginManager().registerEvents(this, this);
     }
 
-    @Override
-    public void onDisable() {
-        // Plugin shutdown logic can be added here
-    }
+    // onDisable remains unchanged
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
-        // Reduce player's max health
         adjustPlayerMaxHealth(event.getEntity(), -2);
     }
 
     @EventHandler
     public void onPlayerInteractForLifeRedstone(PlayerInteractEvent event) {
-        // Interact with 'Zycie' redstone
-        interactWithLifeRedstone(event.getPlayer(), event.getItem());
+        ItemStack item = event.getItem();
+        if (item != null && item.getType() == Material.REDSTONE && hasDisplayName(item, REDSTONE_DISPLAY_NAME)) {
+            adjustPlayerMaxHealth(event.getPlayer(), 2);
+            item.setAmount(item.getAmount() > 1 ? item.getAmount() - 1 : 0);
+        }
     }
 
     @Override
@@ -58,19 +58,9 @@ public final class HeartLose extends JavaPlugin implements CommandExecutor, List
     }
 
     private void adjustPlayerMaxHealth(Player player, int change) {
-        double newBaseHealth = Math.max(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() + change, DEFAULT_MAX_HEARTS / 2.0);
+        double currentValue = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+        double newBaseHealth = Math.max(MIN_MAX_HEARTS, Math.min(currentValue + change, MAX_MAX_HEARTS));
         player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(newBaseHealth);
-    }
-
-    private void interactWithLifeRedstone(Player player, ItemStack item) {
-        if (item != null && item.getType() == Material.REDSTONE && hasDisplayName(item, REDSTONE_DISPLAY_NAME)) {
-            adjustPlayerMaxHealth(player, 2);
-            if (item.getAmount() > 1) {
-                item.setAmount(item.getAmount() - 1);
-            } else {
-                item.setAmount(0); // Ensure item is not left with amount 0
-            }
-        }
     }
 
     private void giveLifeRedstone(Player player) {
@@ -87,9 +77,11 @@ public final class HeartLose extends JavaPlugin implements CommandExecutor, List
     }
 
     private boolean hasDisplayName(ItemStack item, String displayName) {
-        return item.hasItemMeta() && item.getItemMeta().getDisplayName() != null && item.getItemMeta().getDisplayName().equals(displayName);
+        return item.hasItemMeta() && item.getItemMeta().getDisplayName().equals(displayName);
     }
 }
+
+
 
 
 
