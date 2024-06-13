@@ -1,0 +1,8 @@
+name: HeartLose
+version: '1.0.0'
+main: winlyps.heartlose.HeartLose
+api-version: '1.20'
+commands:
+  zycie:
+    description: Gives the player a life stick.
+    usage: /zycie
