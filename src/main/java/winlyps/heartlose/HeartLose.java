@@ -20,10 +20,10 @@ public final class HeartLose extends JavaPlugin implements CommandExecutor, List
 
     private static final int MIN_MAX_HEARTS = 1;
     private static final int MAX_MAX_HEARTS = 20; // Ensure comment matches this value
-    private static final String COMMAND_NAME = "zycie";
-    private static final String REDSTONE_DISPLAY_NAME = ChatColor.RED + "Zycie";
+    private static final String COMMAND_NAME = "life";
+    private static final String REDSTONE_DISPLAY_NAME = ChatColor.RED + "Life";
     private static final String NOT_A_PLAYER_MSG = "This command can only be used by players.";
-    private static final String REDSTONE_ADDED_MSG = "Redstone 'Zycie' added to your inventory.";
+    private static final String REDSTONE_ADDED_MSG = "Redstone 'Life' added to your inventory.";
 
     @Override
     public void onEnable() {
