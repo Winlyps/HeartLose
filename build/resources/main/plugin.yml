@@ -2,7 +2,8 @@ name: HeartLose
 version: '1.0.0'
 main: winlyps.heartlose.HeartLose
 api-version: '1.16'
+author: [Winlyps]
 commands:
-  zycie:
+  life:
     description: Gives the player a life item.
     usage: /life
