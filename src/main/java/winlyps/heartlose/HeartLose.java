@@ -21,9 +21,9 @@ public final class HeartLose extends JavaPlugin implements CommandExecutor, List
     private static final int MIN_MAX_HEARTS = 1;
     private static final int MAX_MAX_HEARTS = 20; // Ensure comment matches this value
     private static final String COMMAND_NAME = "life";
-    private static final String REDSTONE_DISPLAY_NAME = ChatColor.RED + "Life";
+    private static final String RED_DYE_DISPLAY_NAME = ChatColor.RED + "Life";
     private static final String NOT_A_PLAYER_MSG = "This command can only be used by players.";
-    private static final String REDSTONE_ADDED_MSG = "Redstone 'Life' added to your inventory.";
+    private static final String RED_DYE_ADDED_MSG = "Red dye 'Life' added to your inventory.";
 
     @Override
     public void onEnable() {
@@ -39,9 +39,9 @@ public final class HeartLose extends JavaPlugin implements CommandExecutor, List
     }
 
     @EventHandler
-    public void onPlayerInteractForLifeRedstone(PlayerInteractEvent event) {
+    public void onPlayerInteractForLifeRedDye(PlayerInteractEvent event) {
         ItemStack item = event.getItem();
-        if (item != null && item.getType() == Material.REDSTONE && hasDisplayName(item, REDSTONE_DISPLAY_NAME)) {
+        if (item != null && item.getType() == Material.RED_DYE && hasDisplayName(item, RED_DYE_DISPLAY_NAME)) {
             adjustPlayerMaxHealth(event.getPlayer(), 2);
             item.setAmount(item.getAmount() > 1 ? item.getAmount() - 1 : 0);
         }
@@ -50,7 +50,7 @@ public final class HeartLose extends JavaPlugin implements CommandExecutor, List
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (sender instanceof Player) {
-            giveLifeRedstone((Player) sender);
+            giveLifeRedDye((Player) sender);
             return true;
         }
         sender.sendMessage(NOT_A_PLAYER_MSG);
@@ -63,17 +63,17 @@ public final class HeartLose extends JavaPlugin implements CommandExecutor, List
         player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(newBaseHealth);
     }
 
-    private void giveLifeRedstone(Player player) {
-        player.getInventory().addItem(createLifeRedstone());
-        player.sendMessage(REDSTONE_ADDED_MSG);
+    private void giveLifeRedDye(Player player) {
+        player.getInventory().addItem(createLifeRedDye());
+        player.sendMessage(RED_DYE_ADDED_MSG);
     }
 
-    private ItemStack createLifeRedstone() {
-        ItemStack redstone = new ItemStack(Material.REDSTONE);
-        ItemMeta meta = redstone.getItemMeta();
-        meta.setDisplayName(REDSTONE_DISPLAY_NAME);
-        redstone.setItemMeta(meta);
-        return redstone;
+    private ItemStack createLifeRedDye() {
+        ItemStack redDye = new ItemStack(Material.RED_DYE);
+        ItemMeta meta = redDye.getItemMeta();
+        meta.setDisplayName(RED_DYE_DISPLAY_NAME);
+        redDye.setItemMeta(meta);
+        return redDye;
     }
 
     private boolean hasDisplayName(ItemStack item, String displayName) {
